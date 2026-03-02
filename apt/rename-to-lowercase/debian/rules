@@ -3,8 +3,12 @@
 %:
 	dh $@
 
+override_dh_auto_configure:
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
+	. $(HOME)/.cargo/env && dh_auto_configure
+
 override_dh_auto_build:
-	cd src && cargo build --release
+	. $(HOME)/.cargo/env && cd src && cargo build --release
 
 override_dh_auto_install:
 	install -D -m 755 src/target/release/rtlc debian/rename-to-lowercase/usr/bin/rtlc

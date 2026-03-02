@@ -2,7 +2,7 @@ Source: rename-to-lowercase
 Section: utils
 Priority: optional
 Maintainer: typeling1578 <pub@typeling1578.dev>
-Build-Depends: debhelper-compat (= 13), cargo, rustc
+Build-Depends: debhelper-compat (= 13), curl
 Standards-Version: 4.6.2
 Homepage: https://github.com/typeling1578/Rename-to-lowercase
 Rules-Requires-Root: no
