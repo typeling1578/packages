@@ -1,4 +1,4 @@
-rename-to-lowercase (1.2.0-1) ; urgency=medium
+rename-to-lowercase (1.2.0-1) unstable; urgency=medium
 
   * Initial release.
 
