@@ -1,0 +1,47 @@
+name: Update package repository
+
+on:
+  push:
+  workflow_dispatch: 
+
+jobs:
+  build-packages:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Build deb package builder image
+        run: |
+          docker run --name deb-package-builder-temp-container ubuntu:24.04 sh -c "apt update && apt install -y build-essential devscripts debhelper dh-make equivs"
+          docker commit deb-package-builder-temp-container deb-package-builder
+          docker rm deb-package-builder-temp-container
+
+      - name: Build deb packages
+        run: |
+          mkdir /tmp/deb-packages
+
+          find ./apt -mindepth 1 -maxdepth 1 -type d | while read -r pkg_dir; do
+            docker run --rm -v "$pkg_dir":/workdir -w /workdir deb-package-builder sh -c "mk-build-deps -i -r -t 'apt-get -y' && dpkg-buildpackage -us -uc -b && mv /*.deb /workdir"
+            mv "$pkg_dir/"*.deb /tmp/deb-packages
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: deb-packages
+          path: /tmp/deb-packages/*
+
+  update-repository:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+
+    steps:
+      - name: Install reprepro
+        run: |
+          sudo apt install reprepro
