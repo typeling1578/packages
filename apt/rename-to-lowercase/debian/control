@@ -1,0 +1,16 @@
+Source: rename-to-lowercase
+Section: utils
+Priority: optional
+Maintainer: typeling1578 <pub@typeling1578.dev>
+Build-Depends: debhelper-compat (= 13), cargo, rustc
+Standards-Version: 4.6.2
+Homepage: https://github.com/typeling1578/Rename-to-lowercase
+Rules-Requires-Root: no
+
+Package: rename-to-lowercase
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: CLI tool to rename files to lowercase
+ A command-line utility that recursively renames all files and
+ directories within a specified path to lowercase. It supports
+ a force mode (-f) to skip confirmation prompts.
