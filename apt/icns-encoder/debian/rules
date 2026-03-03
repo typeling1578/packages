@@ -1,0 +1,16 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	curl --proto '=https' --tlsv1.2 -sSfL https://go.dev/dl/go1.26.0.linux-amd64.tar.gz | tar -C /usr/local -xzf -
+	dh_auto_configure
+
+override_dh_auto_build:
+	export PATH=$PATH:/usr/local/go/bin && cd src && go build -ldflags="-s"
+
+override_dh_auto_install:
+	install -D -m 755 src/icns-encoder debian/icns-encoder/usr/bin/icns-encoder
+
+override_dh_auto_test:
