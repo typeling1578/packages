@@ -1,0 +1,13 @@
+Source: ico-encoder
+Section: utils
+Priority: optional
+Maintainer: typeling1578 <pub@typeling1578.dev>
+Build-Depends: debhelper-compat (= 13), curl
+Standards-Version: 4.6.2
+Homepage: https://github.com/Ablaze-MIRAI/ico-encoder
+Rules-Requires-Root: no
+
+Package: ico-encoder
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A simple .ico encoder.

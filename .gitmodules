@@ -1,3 +1,6 @@
 [submodule "apt/rename-to-lowercase/src"]
 	path = apt/rename-to-lowercase/src
 	url = https://github.com/typeling1578/Rename-to-lowercase
+[submodule "apt/ico-encoder/src"]
+	path = apt/ico-encoder/src
+	url = https://github.com/Ablaze-MIRAI/ico-encoder
