@@ -70,11 +70,12 @@ jobs:
           acl = private
           EOF
 
-          rclone ls r2: -vv
+          rclone ls r2:"$R2_BUCKET" -vv
         env:
           R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
 
       - name: Sync from R2 to local
         run: |
