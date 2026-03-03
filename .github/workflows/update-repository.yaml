@@ -40,8 +40,73 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
+    needs: [build-packages]
 
     steps:
-      - name: Install reprepro
+      - uses: actions/download-artifact@v5
+        with:
+          name: deb-packages
+          path: /tmp/deb-packages
+
+      - name: Install requirements
         run: |
-          sudo apt install reprepro
+          sudo apt install reprepro rclone
+
+      - name: Setup GPG
+        run: |
+          echo "$GPG_SIGNING_KEY_BASE64" | base64 -d | gpg --import
+        env:
+          GPG_SIGNING_KEY_BASE64: ${{ secrets.GPG_SIGNING_KEY_BASE64 }}
+
+      - name: Setup Rclone R2 config
+        run: |
+          cat << EOF > ~/.config/rclone/rclone.conf
+          [r2]
+          type = s3
+          provider = Cloudflare
+          access_key_id = $R2_ACCESS_KEY_ID
+          secret_access_key = $R2_SECRET_ACCESS_KEY
+          endpoint = $R2_ENDPOINT
+          acl = private
+          EOF
+
+          rclone ls r2: -vv
+        env:
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+
+      - name: Sync from R2 to local
+        run: |
+          mkdir ./workdir
+          rclone sync ./workdir r2:"$R2_BUCKET" --progress
+        env:
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+
+      - name: Add deb packages to apt repository
+        run: |
+          cd ./workdir
+
+          CODENAME="any"
+
+          find /tmp/deb-packages -mindepth 1 -maxdepth 1 -type f | while read -r deb_file; do
+            PACKAGE_NAME=$(dpkg-deb -f "$deb_file" Package)
+            PACKAGE_VERSION=$(dpkg-deb -f "$deb_file" Version)
+            PACKAGE_ARCH=$(dpkg-deb -f "$deb_file" Architecture)
+
+            if reprepro -b . -A "$PACKAGE_ARCH" list "$CODENAME" "$PACKAGE_NAME" | grep -q " ${PACKAGE_VERSION}$"; then
+              echo "[SKIP] $PACKAGE_NAME ($PACKAGE_VERSION, $PACKAGE_ARCH) is already registered"
+            else
+              echo "[ADD] Adding $PACKAGE_NAME ($PACKAGE_VERSION, $PACKAGE_ARCH) to repository..."
+              reprepro -b . includedeb "$CODENAME" "$deb_file"
+            fi
+          done
+
+          reprepro -b . deleteunreferenced
+
+      - name: Sync from local to R2
+        run: |
+          mkdir ./workdir
+          rclone sync r2:"$R2_BUCKET" ./workdir --progress
+        env:
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
