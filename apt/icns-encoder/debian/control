@@ -1,0 +1,13 @@
+Source: icns-encoder
+Section: utils
+Priority: optional
+Maintainer: typeling1578 <pub@typeling1578.dev>
+Build-Depends: debhelper-compat (= 13), curl
+Standards-Version: 4.6.2
+Homepage: https://github.com/Ablaze-MIRAI/icns-encoder
+Rules-Requires-Root: no
+
+Package: icns-encoder
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A simple .icns encoder.

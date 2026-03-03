@@ -4,3 +4,6 @@
 [submodule "apt/ico-encoder/src"]
 	path = apt/ico-encoder/src
 	url = https://github.com/Ablaze-MIRAI/ico-encoder
+[submodule "apt/icns-encoder/src"]
+	path = apt/icns-encoder/src
+	url = https://github.com/Ablaze-MIRAI/icns-encoder

@@ -1,0 +1,17 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: icns-encoder
+Upstream-Contact: typeling1578 <pub@typeling1578.dev>
+Source: https://github.com/Ablaze-MIRAI/icns-encoder
+
+Files: *
+Copyright: typeling1578
+License: MPL-2.0
+
+Files: debian/*
+Copyright: typeling1578
+License: MPL-2.0
+
+License: MPL-2.0
+ This Source Code Form is subject to the terms of the Mozilla Public
+ License, v. 2.0. If a copy of the MPL was not distributed with this
+ file, You can obtain one at http://mozilla.org/MPL/2.0/.
